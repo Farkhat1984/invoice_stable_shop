@@ -1,0 +1,43 @@
+<MainView>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 15
+        canvas.before:
+            Color:
+                rgba: background_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: 'Главное меню'
+            size_hint_y: None
+            height: '50dp'
+            font_size: '24dp'
+            color: text_color
+            bold: True
+
+        CustomButton:
+            text: 'Создать'
+            font_size: '15dp'
+            on_release: root.show_create_invoice()
+
+        CustomButton:
+            text: 'История'
+            font_size: '15dp'
+            on_release: root.show_history()
+
+        CustomButton:
+            text: 'Аналитика'
+            font_size: '15dp'
+            on_release: root.show_analytics()
+
+        Widget:
+            size_hint_y: None
+            height: '15dp'
+
+        SecondaryButton:
+            font_size: '15dp'
+            text: 'Выход'
+            on_release: root.logout()

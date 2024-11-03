@@ -1,0 +1,22 @@
+# views/kv_view/analytics.kv
+<AnalyticsView>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: 'Аналитика'
+            size_hint_y: None
+            height: '50dp'
+
+        Label:
+            text: 'Здесь будет аналитика'
+            size_hint_y: None
+            height: '50dp'
+
+        Button:
+            text: 'Назад'
+            size_hint_y: None
+            height: '40dp'
+            on_release: app.root.current = 'main'

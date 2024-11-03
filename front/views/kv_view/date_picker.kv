@@ -1,0 +1,81 @@
+<CalendarButton@CustomButton>:
+    size_hint_y: None
+    height: dp(35)
+    font_size: '12dp'
+
+<CalendarDayLabel@Label>:
+    size_hint_y: None
+    height: dp(30)
+    font_size: '12dp'
+    color: text_color
+
+<CustomDatePicker>:
+    title_color: text_color
+    title_size: '14dp'
+    background: ''
+    background_color: popup_background
+    size_hint: None, None
+    size: dp(350), dp(450)
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(5)
+        padding: dp(10)
+
+        # Селектор месяца/года
+        GridLayout:
+            cols: 3
+            size_hint_y: None
+            height: dp(40)
+            spacing: dp(5)
+
+            CustomButton:
+                id: prev_button
+                text: '<'
+                size_hint_x: None
+                width: dp(40)
+                on_release: root.prev_month(self)
+
+            Label:
+                id: month_year_label
+                color: text_color
+                size_hint_x: None
+                width: dp(200)
+                font_size: '14dp'
+                halign: 'center'
+
+            CustomButton:
+                id: next_button
+                text: '>'
+                size_hint_x: None
+                width: dp(40)
+                on_release: root.next_month(self)
+
+        # Дни недели
+        GridLayout:
+            id: weekdays
+            cols: 7
+            size_hint_y: None
+            height: dp(30)
+            spacing: dp(2)
+
+        # Сетка календаря
+        GridLayout:
+            id: calendar_grid
+            cols: 7
+            spacing: dp(2)
+
+        # Кнопки управления
+        BoxLayout:
+            size_hint_y: None
+            height: dp(40)
+            spacing: dp(10)
+            padding: [dp(5), dp(10), dp(5), 0]
+
+            CustomButton:
+                text: 'Сегодня'
+                on_release: root.set_today(self)
+
+            SecondaryButton:
+                text: 'Отмена'
+                on_release: root.dismiss()

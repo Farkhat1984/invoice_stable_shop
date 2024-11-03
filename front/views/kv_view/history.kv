@@ -1,0 +1,192 @@
+<HistoryView>:
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: '5dp'
+        padding: '5dp'
+        canvas.before:
+            Color:
+                rgba: background_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Верхний блок с фильтрами (20% высоты)
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.2
+            spacing: '5dp'
+
+            GridLayout:
+                cols: 3
+                spacing: '3dp'
+                padding: '3dp'
+                row_default_height: '30dp'
+                row_force_default: True
+
+                # Первая колонка
+                CustomTextInput:
+                    hint_text: 'Номер накладной:'
+                    id: invoice_number_filter
+                    size_hint_y: None
+                    height: '30dp'
+                    on_text_validate: root.search_invoices(self)
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: '30dp'
+                    spacing: '2dp'
+                    CustomTextInput:
+                        id: date_from
+                        hint_text: 'Дата с: 2024-10-31'
+                        readonly: True
+                        on_text_validate: root.search_invoices(self)
+                    CustomButton:
+                        text: '📅'
+                        size_hint_x: None
+                        width: '30dp'
+                        on_release: root.show_date_picker_from(self)
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: '30dp'
+                    spacing: '2dp'
+                    CustomTextInput:
+                        id: date_to
+                        hint_text: 'по: 2024-10-31'
+                        readonly: True
+                        on_text_validate: root.search_invoices(self)
+                    CustomButton:
+                        text: '📅'
+                        size_hint_x: None
+                        width: '30dp'
+                        on_release: root.show_date_picker_to(self)
+
+                CustomTextInput:
+                    id: contact_filter
+                    hint_text: 'Контакт'
+                    size_hint_y: None
+                    height: '30dp'
+                    on_text_validate: root.search_invoices(self)
+
+                CustomTextInput:
+                    id: amount_from
+                    input_filter: 'float'
+                    hint_text: 'Сумма от:'
+                    size_hint_y: None
+                    height: '30dp'
+                    on_text_validate: root.search_invoices(self)
+
+                CustomTextInput:
+                    id: amount_to
+                    input_filter: 'float'
+                    hint_text: 'до:'
+                    size_hint_y: None
+                    height: '30dp'
+                    on_text_validate: root.search_invoices(self)
+
+                CustomButton:
+                    text: 'Обновить список'
+                    size_hint_y: None
+                    height: '30dp'
+                    on_press: root.refresh_list(self)
+
+                CustomButton:
+                    text: 'Поиск'
+                    size_hint_y: None
+                    height: '30dp'
+                    on_press: root.search_invoices(self)
+
+                SecondaryButton:
+                    text: 'Сбросить'
+                    size_hint_y: None
+                    height: '30dp'
+                    on_press: root.reset_filters()
+        # Средний блок с основным контентом (75% высоты)
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.75
+            spacing: '5dp'
+
+            # Шапка таблицы
+            BoxLayout:
+                size_hint_y: None
+                height: '35dp'
+                spacing: '5dp'
+                padding: '5dp'
+                canvas.before:
+                    Color:
+                        rgba: primary_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [8]
+
+                CustomToggleButton:
+                    text: 'Номер'
+                    group: 'sort'
+                    size_hint_x: 0.1
+                    font_size: '10dp'
+                    on_press: root.sort_invoices('number') if self.state == 'down' else None
+
+                CustomToggleButton:
+                    text: 'Дата'
+                    group: 'sort'
+                    size_hint_x: 0.1
+                    on_press: root.sort_invoices('date') if self.state == 'down' else None
+
+                CustomToggleButton:
+                    text: 'Контрагент'
+                    group: 'sort'
+                    size_hint_x: 0.15
+                    on_press: root.sort_invoices('contact') if self.state == 'down' else None
+
+                CustomToggleButton:
+                    text: 'Сумма'
+                    group: 'sort'
+                    size_hint_x: 0.15
+                    on_press: root.sort_invoices('total') if self.state == 'down' else None
+
+                CustomSpinner:
+                    id: payment_status
+                    text: 'Все'
+                    values: ['Все', 'Оплачено', 'Не оплачено']
+                    size_hint_x: 0.15
+                    on_text: root.search_invoices(self)
+                Label:
+                    text: 'Действия'
+                    size_hint_x: 0.2
+                    color: 1, 1, 1, 1
+                    bold: True
+                    font_size: '10dp'
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+
+            # Список накладных
+            RecycleView:
+                id: invoice_list
+                viewclass: 'InvoiceItemWidget'
+                effect_cls: "ScrollEffect"
+
+                RecycleBoxLayout:
+                    default_size: None, '45dp'
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: '5dp'
+                    padding: '3dp'
+
+        # Нижний блок с кнопкой "Назад" (5% высоты)
+        BoxLayout:
+            size_hint_y: 0.05
+            spacing: '5dp'
+            padding: '3dp'
+
+            Widget:
+                size_hint_x: 0.7
+
+            SecondaryButton:
+                text: 'Назад'
+                size_hint_x: 0.3
+                on_release: app.root.current = 'main'

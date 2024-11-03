@@ -1,0 +1,82 @@
+<InvoiceItemWidget>:
+    canvas.before:
+        Color:
+            rgba: (0.98, 0.98, 1, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [4]
+
+    BoxLayout:
+        orientation: 'horizontal'
+        spacing: '10dp'
+        padding: '5dp'
+
+        Label:
+            id: number_label
+            text: root.number
+            size_hint_x: 0.1
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+            color: text_color
+            font_size: '10dp'
+
+        Label:
+            id: date_label
+            text: root.date
+            size_hint_x: 0.1
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+            color: text_color
+            font_size: '10dp'
+
+        Label:
+            id: contact_label
+            text: root.contact
+            size_hint_x: 0.15
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+            color: text_color
+            font_size: '10dp'
+
+        Label:
+            id: total_label
+            text: '{:,.2f}'.format(root.total)
+            size_hint_x: 0.15
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+            color: text_color
+            bold: True
+            font_size: '10dp'
+
+        Label:
+            id: status_label
+            text: 'Оплачено' if root.is_paid else 'Не оплачено'
+            size_hint_x: 0.15
+            color: (0, 0.7, 0, 1) if root.is_paid else (0.7, 0, 0, 1)
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
+            bold: True
+            font_size: '10dp'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_x: 0.2
+            spacing: '5dp'
+
+            CustomButton:
+                text: 'Ред.'
+                size_hint_x: 0.5
+                on_press: root.edit_invoice(self)
+                font_size: '10dp'
+
+            DangerButton:
+                text: 'Удал.'
+                font_size: '10dp'
+                size_hint_x: 0.5
+                on_press: root.delete_invoice(self)

@@ -1,0 +1,58 @@
+<InvoiceTable>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    spacing: 5
+    height: '30dp'
+    canvas.before:
+        Color:
+            rgba: (0.98, 0.98, 1, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [6]
+
+    Label:
+        id: number
+        text: ''
+        size_hint_x: 0.1
+        color: text_color
+        bold: True
+        font_size: '10dp'
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+
+    CustomTextInput:
+        id: name
+        text: ''
+        size_hint_x: 0.45
+        background_color: 1, 1, 1, 0.8
+        font_size: '10dp'
+        padding: [10, (self.height - self.line_height) / 2]  # Вертикальное центрирование текста
+
+    CustomTextInput:
+        id: quantity
+        hint_text: '0'
+        size_hint_x: 0.15
+        background_color: 1, 1, 1, 0.8
+        input_filter: 'float'
+        font_size: '10dp'
+        padding: [10, (self.height - self.line_height) / 2]
+
+    CustomTextInput:
+        id: price
+        hint_text: '0,00'
+        size_hint_x: 0.15
+        background_color: 1, 1, 1, 0.8
+        input_filter: 'float'
+        font_size: '10dp'
+        padding: [10, (self.height - self.line_height) / 2]
+
+    CustomTextInput:
+        id: sum
+        hint_text: '0,00'
+        readonly: True
+        size_hint_x: 0.2
+        background_color: 0.95, 0.95, 0.95, 1
+        font_size: '10dp'
+        padding: [10, (self.height - self.line_height) / 2]

@@ -1,0 +1,152 @@
+#:import dp kivy.metrics.dp
+#:set primary_color (0.2, 0.6, 1, 1)
+#:set secondary_color (0.3, 0.3, 0.3, 1)
+#:set background_color (0.96, 0.96, 0.98, 1)
+#:set text_color (0.2, 0.2, 0.2, 1)
+#:set border_radius [10, ]
+#:set input_border_radius [6, ]
+#:set popup_background (1, 1, 1, 1)
+
+<CustomButton@Button>:
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: primary_color if self.state == 'normal' else (0.18, 0.54, 0.96, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: border_radius
+    font_size: '10dp'
+    bold: True
+    size_hint_y: None
+    height: '30dp'
+
+<SecondaryButton@Button>:
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: secondary_color if self.state == 'normal' else (0.25, 0.25, 0.25, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: border_radius
+    font_size: '10dp'
+    size_hint_y: None
+    height: '30dp'
+
+<PaymentStatusButton@Button>:
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: (0, 0.7, 0, 1) if self.text == 'Оплачено!' else (1, 0.3, 0.3, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: border_radius
+    font_size: '10dp'
+    bold: True
+    size_hint_y: None
+    height: '30dp'
+
+<CustomTextInput@TextInput>:
+    multiline: False
+    size_hint_y: None
+    height: '30dp'
+    padding: [10, 6]
+    background_color: 1, 1, 1, 1
+    background_active: ''
+    background_normal: ''
+    cursor_color: 0, 0, 0, 1
+    font_size: '10dp'
+    foreground_color: 0, 0, 0, 1
+    hint_text_color: 0.5, 0.5, 0.5, 1
+    write_tab: False
+    selection_color: 0.8, 0.8, 1, 0.5
+    halign: 'left'  # выравнивание текста по левому краю
+    valign: 'middle'  # вертикальное выравнивание по центру
+    pos_hint: {'center_y': 0.5}  # только вертикальное центрирование виджета
+    canvas:
+        Color:
+            rgba: (0.9, 0.9, 0.9, 1) if not self.focus else primary_color
+        Line:
+            width: 1
+            rounded_rectangle: [self.x, self.y, self.width, self.height, input_border_radius[0]]
+<CustomToggleButton@ToggleButton>:
+    background_color: 0, 0, 0, 0
+    color: 1, 1, 1, 1
+    bold: True
+    font_size: '10dp'
+    size_hint_y: None
+    height: '30dp'
+    canvas.before:
+        Color:
+            rgba: (0.3, 0.7, 1, 1) if self.state == 'down' else (0, 0, 0, 0)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: input_border_radius
+
+<CustomSpinner@Spinner>:
+    background_color: 0, 0, 0, 0
+    color: 1, 1, 1, 1
+    bold: True
+    font_size: '10dp'
+    size_hint_y: None
+    height: '30dp'
+    option_cls: 'CustomSpinnerOption'
+    sync_height: True
+    text_autoupdate: True
+    values_padding: '10dp'
+    canvas.before:
+        Color:
+            rgba: primary_color if self.text == 'Все' else (0.2, 0.8, 0.2, 1) if self.text == 'Оплачено' else (0.95, 0.2, 0.2, 1) if self.text == 'Не оплачено' else primary_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<CustomSpinnerOption@SpinnerOption>:
+    background_color: 0, 0, 0, 0
+    color: text_color
+    font_size: '10dp'
+    height: '30dp'
+    padding: '10dp', 0
+    canvas.before:
+        Color:
+            rgba: (0.9, 0.95, 1, 1) if self.state == 'down' else (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: primary_color if self.text == 'Все' else (0.2, 0.8, 0.2, 1) if self.text == 'Оплачено' else (0.95, 0.2, 0.2, 1) if self.text == 'Не оплачено' else (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: (0.9, 0.9, 0.9, 1) if self.text == 'Все' and self.state == 'down' else (0.2, 0.8, 0.2, 1) if self.text == 'Оплачено' and self.state == 'down' else (0.95, 0.2, 0.2, 1) if self.text == 'Не оплачено' and self.state == 'down' else (0, 0, 0, 0)
+        Rectangle:
+            pos: self.x, self.y
+            size: dp(2), self.height
+
+<CustomSpinner>:
+    dropdown_cls: 'CustomSpinnerDropdown'
+
+<CustomSpinnerDropdown@DropDown>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Rectangle:
+            pos: self.x - dp(2), self.y - dp(2)
+            size: self.width + dp(4), self.height + dp(4)
+
+
+<DangerButton@CustomButton>:
+    canvas.before:
+        Color:
+            rgba: (0.8, 0.2, 0.2, 1) if self.state == 'normal' else (0.7, 0.1, 0.1, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: border_radius

@@ -1,0 +1,76 @@
+<AuthView>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 15
+        spacing: 8
+
+        canvas.before:
+            Color:
+                rgba: background_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: 'Авторизация'
+            size_hint_y: None
+            height: '40dp'
+            font_size: '20dp'
+            color: text_color
+            bold: True
+            halign: 'center'
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            padding: [0, 15]
+            spacing: 12
+
+            CustomTextInput:
+                id: username
+                hint_text: 'Логин'
+                size_hint_x: 0.85
+                pos_hint: {'center_x': 0.5}
+                font_size: '15dp'
+                halign: 'center'
+                valign: 'center'
+                padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+                multiline: False
+
+            CustomTextInput:
+                id: password
+                hint_text: 'Пароль'
+                password: True
+                size_hint_x: 0.85
+                pos_hint: {'center_x': 0.5}
+                font_size: '15dp'
+                halign: 'center'
+                valign: 'center'
+                padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+                multiline: False
+
+            CustomButton:
+                text: 'Войти'
+                font_size: '15dp'
+                size_hint_x: 0.85
+                pos_hint: {'center_x': 0.5}
+                on_release: root.login(username.text, password.text)
+
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+
+            SecondaryButton:
+                text: 'Регистрация'
+                font_size: '15dp'
+                size_hint_x: 0.85
+                pos_hint: {'center_x': 0.5}
+                on_release: root.show_registration()
+
+            SecondaryButton:
+                text: 'Восстановить пароль'
+                font_size: '15dp'
+                size_hint_x: 0.85
+                pos_hint: {'center_x': 0.5}
+                on_release: root.show_password_recovery()
