@@ -7,6 +7,9 @@ from front.utils.pdf_generator import InvoicePDFGenerator
 from front.utils.share_pdf import ShareManager
 
 
+
+
+
 class InvoiceActionsMixin:
     def show_message(self, message: str) -> None:
         """Utility method to show a popup message."""
@@ -32,7 +35,7 @@ class InvoiceActionsMixin:
             os.makedirs(pdf_dir, exist_ok=True)
 
             # Generate filename
-            invoice_id = self.invoice_number_input.text or 'new'
+            invoice_id = self.displayed_text or 'new'
             filename = InvoicePDFGenerator.get_invoice_filename(invoice_id)
             pdf_path = os.path.join(pdf_dir, filename)
 
@@ -67,7 +70,7 @@ class InvoiceActionsMixin:
 
             # Create PDF
             pdf_generator = InvoicePDFGenerator()
-            invoice_id = self.invoice_number_input.text or 'new'
+            invoice_id = self.displayed_text or 'new'
             filename = InvoicePDFGenerator.get_invoice_filename(invoice_id)
             pdf_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'generated_pdfs', filename)
             generated_pdf = pdf_generator.generate_pdf(invoice_data, pdf_path)
