@@ -31,7 +31,6 @@ class HistoryView(Screen):
         self._cache_ui_elements()
 
     def _cache_ui_elements(self):
-        """Cache references to UI elements"""
         self.invoice_number_filter = self.ids.invoice_number_filter
         self.date_from_filter = self.ids.date_from
         self.date_to_filter = self.ids.date_to
@@ -42,24 +41,19 @@ class HistoryView(Screen):
         self.invoice_list = self.ids.invoice_list
 
     def on_enter(self):
-        """Called when screen is entered"""
         self.is_active = True
         Clock.schedule_once(lambda dt: self.refresh_list(), 0.1)
-        # Load stats for current shop
         if self.api_controller:
             self.load_invoice_stats()
 
     def on_leave(self):
-        """Called when leaving the screen"""
         self.is_active = False
 
     def load_invoice_stats(self) -> None:
-        """Load statistics for current shop"""
         if not self.api_controller:
             return
 
         def on_stats_success(stats):
-            # Handle stats data if needed
             pass
 
         def on_stats_error(error):
@@ -72,7 +66,6 @@ class HistoryView(Screen):
         )
 
     def reset_filters(self) -> None:
-        """Reset all filters and update list."""
         self.invoice_number_filter.text = ''
         self.date_from_filter.text = ''
         self.date_to_filter.text = ''
@@ -84,25 +77,20 @@ class HistoryView(Screen):
         Clock.schedule_once(lambda dt: self.update_display(), 0.1)
 
     def show_date_picker_from(self, instance):
-        """Show calendar for start date selection"""
         date_picker = DatePicker(callback=self.set_date_from)
         date_picker.open()
 
     def show_date_picker_to(self, instance):
-        """Show calendar for end date selection"""
         date_picker = DatePicker(callback=self.set_date_to)
         date_picker.open()
 
     def set_date_from(self, date_str):
-        """Set start date"""
         self.date_from_filter.text = date_str
 
     def set_date_to(self, date_str):
-        """Set end date"""
         self.date_to_filter.text = date_str
 
     def validate_date_range(self):
-        """Validate date range"""
         if not self.date_from_filter.text or not self.date_to_filter.text:
             return True
 
@@ -124,7 +112,6 @@ class HistoryView(Screen):
             return False
 
     def sort_invoices(self, field: str) -> None:
-        """Sort invoices by field."""
         if self.sort_field == field:
             self.sort_reverse = not self.sort_reverse
         else:
@@ -136,7 +123,10 @@ class HistoryView(Screen):
                 self.current_data.sort(key=lambda x: float(x.get(field, 0.0)), reverse=self.sort_reverse)
             elif field == 'date':
                 self.current_data.sort(key=lambda x: datetime.strptime(x.get(field, ''), "%Y-%m-%d"),
-                                       reverse=self.sort_reverse)
+                                     reverse=self.sort_reverse)
+            elif field == 'number':
+                # Convert invoice number to integer for proper numeric sorting
+                self.current_data.sort(key=lambda x: int(x.get(field, '0')), reverse=self.sort_reverse)
             else:
                 self.current_data.sort(key=lambda x: x.get(field, '').lower(), reverse=self.sort_reverse)
             Clock.schedule_once(lambda dt: self.update_display(), 0.1)
@@ -144,7 +134,6 @@ class HistoryView(Screen):
             self.show_message(f"Ошибка при сортировке: {str(e)}")
 
     def group_invoices(self, field: str) -> None:
-        """Group invoices by field."""
         if not self.current_data:
             return
 
@@ -174,12 +163,10 @@ class HistoryView(Screen):
         self.invoice_list.refresh_from_data()
 
     def clear_grouping(self) -> None:
-        """Clear current grouping and update display."""
         self.current_grouping = None
         Clock.schedule_once(lambda dt: self.update_display(), 0.1)
 
     def _convert_invoice_to_display_format(self, invoice: Dict[str, Any]) -> Dict[str, Any]:
-        """Convert invoice data to display format"""
         return {
             'number': str(invoice.get('id', '')),
             'date': invoice.get('created_at', '').split('T')[0] if 'T' in invoice.get('created_at', '')
@@ -191,7 +178,6 @@ class HistoryView(Screen):
         }
 
     def update_display(self) -> None:
-        """Update invoice list display"""
         if not self.is_active:
             return
 
@@ -202,7 +188,6 @@ class HistoryView(Screen):
             self.invoice_list.refresh_from_data()
 
     def edit_invoice(self, invoice_id: int) -> None:
-        """Edit selected invoice."""
         try:
             print(f"HistoryView: Loading invoice {invoice_id} for editing")
 
@@ -267,12 +252,9 @@ class HistoryView(Screen):
                 print("HistoryView: No token available")
 
     def update_invoice_in_list(self, updated_invoice: Dict[str, Any]) -> None:
-        """Update specific invoice in list."""
         try:
             invoice_number = str(updated_invoice.get('id'))
             invoice_data = self._convert_invoice_to_display_format(updated_invoice)
-
-            # Update in both lists
             for data_list in [self.original_data, self.current_data]:
                 for i, invoice in enumerate(data_list):
                     if invoice['number'] == invoice_number:
@@ -286,11 +268,9 @@ class HistoryView(Screen):
             self.show_message(f"Ошибка при обновлении накладной: {str(e)}")
 
     def remove_invoice_from_list(self, invoice_id: int) -> None:
-        """Remove invoice from list."""
         try:
             invoice_id_str = str(invoice_id)
 
-            # Update last_invoice_id if needed
             if str(self.last_invoice_id) == invoice_id_str:
                 self.last_invoice_id = None
                 if self.auth_controller:
@@ -304,11 +284,8 @@ class HistoryView(Screen):
             self.show_message(f"Ошибка при удалении накладной: {str(e)}")
 
     def add_invoice_to_list(self, new_invoice: Dict[str, Any]) -> None:
-        """Add new invoice to list"""
         try:
             invoice_data = self._convert_invoice_to_display_format(new_invoice)
-
-            # Update last_invoice_id
             if new_invoice.get('id'):
                 self.last_invoice_id = int(new_invoice['id'])
                 if self.auth_controller:
@@ -324,7 +301,6 @@ class HistoryView(Screen):
             self.show_message(f"Ошибка при добавлении накладной: {str(e)}")
 
     def show_message(self, message: str) -> None:
-        """Show popup message to user."""
         popup = Popup(
             title='Сообщение',
             content=Label(text=message),
@@ -334,17 +310,14 @@ class HistoryView(Screen):
         popup.open()
 
     def on_load_error(self, error: str) -> None:
-        """Callback for invoice load error."""
         print(f"HistoryView: Load error: {error}")
         self.show_message(f"Ошибка загрузки накладных: {error}")
 
     def search_invoices(self, instance=None) -> None:
-        """Filter invoices by criteria."""
         if not self.validate_date_range():
             return
 
         try:
-            # Get base data for current shop
             filtered_data = [
                 invoice for invoice in self.original_data
                 if invoice.get('shop_id', self.current_shop_id) == self.current_shop_id
@@ -407,7 +380,6 @@ class HistoryView(Screen):
             self.show_message(f"Ошибка при фильтрации данных: {str(e)}")
 
     def refresh_list(self, instance=None) -> None:
-        """Refresh invoice list from server."""
         if not self.api_controller:
             print("HistoryView: No API controller")
             self.show_message("API контроллер не инициализирован")
@@ -422,7 +394,6 @@ class HistoryView(Screen):
 
         print(f"HistoryView: Refreshing list with token: {self.sm.get_screen('invoice').auth_controller.token}")
 
-        # Include shop_id in filters
         filters = {'shop_id': self.current_shop_id} if self.current_shop_id else {}
 
         self.api_controller.get_invoices(
@@ -431,24 +402,18 @@ class HistoryView(Screen):
             filters=filters
         )
 
-        # Also refresh stats
         self.load_invoice_stats()
 
     def delete_invoice(self, invoice_id: int) -> None:
-        """Delete invoice by ID."""
         try:
             def on_delete_success():
-                # Update last_invoice_id if needed
                 if self.last_invoice_id == invoice_id:
                     self.last_invoice_id = None
                     if self.auth_controller:
                         self.auth_controller.last_invoice_id = None
 
-                # Update invoice lists and UI
                 self.show_message("Накладная успешно удалена")
                 self.refresh_list()
-
-                # Notify invoice view to update number if needed
                 invoice_view = self.sm.get_screen('invoice')
                 if hasattr(invoice_view, '_update_invoice_number'):
                     invoice_view._update_invoice_number()
@@ -469,13 +434,9 @@ class HistoryView(Screen):
             self.show_message(f"Ошибка при удалении накладной: {str(e)}")
 
     def apply_filters(self, filters: Dict[str, Any]) -> None:
-        """Apply filters from external sources"""
         try:
-            # Ensure shop_id is included
             if self.current_shop_id:
                 filters['shop_id'] = self.current_shop_id
-
-            # Apply filters to API request
             self.api_controller.get_invoices(
                 success_callback=self.on_invoices_loaded,
                 error_callback=self.on_load_error,

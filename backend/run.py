@@ -2,8 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.api.auth_handlers import auth_router
-from app.api.handlers import router as invoice_router
+from app.api.user_routers import auth_router
+from app.api.invoice_routers import router as invoice_router
 from app.core.config import init_db, cleanup_db
 
 

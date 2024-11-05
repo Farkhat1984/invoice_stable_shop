@@ -84,22 +84,6 @@ class InvoiceAPIController(BaseAPIController):
             error_callback=error_callback
         )
 
-    def get_last_invoice(
-            self,
-            success_callback: Optional[Callable[[Any], None]] = None,
-            error_callback: Optional[Callable[[str], None]] = None
-    ):
-        """Retrieve the last created invoice."""
-        endpoint = "/api/v1/invoices/last"
-        logger.debug("Fetching last invoice")
-
-        self._make_request(
-            endpoint=endpoint,
-            method='GET',
-            headers=self._get_headers(),
-            success_callback=lambda req, result: success_callback(result) if success_callback else None,
-            error_callback=error_callback
-        )
 
     def get_invoice_stats(
             self,
